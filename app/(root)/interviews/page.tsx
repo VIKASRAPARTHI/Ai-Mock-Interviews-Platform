@@ -24,7 +24,7 @@ async function InterviewsPage() {
   return (
     <>
       {/* Header */}
-      <section className="flex items-center justify-between mb-8">
+      <section className="flex items-center justify-between mb-8 mt-8">
         <div>
           <h1 className="text-4xl font-bold mb-2">My Interviews</h1>
           <p className="text-light-100">Track your progress and review past interviews</p>
