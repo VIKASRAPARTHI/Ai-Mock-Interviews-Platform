@@ -2,6 +2,8 @@
 
 An AI-powered platform for preparing for mock interviews with real-time feedback and personalized questions.
 
+![Screenshot](https://github.com/VIKASRAPARTHI/Ai-Mock-Interviews-Platform/blob/main/public/Screenshot.png?raw=true)
+
 ## Features
 
 - **AI Voice Assistant** - Natural conversation with AI interviewer
