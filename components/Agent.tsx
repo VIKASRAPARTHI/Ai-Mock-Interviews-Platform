@@ -9,6 +9,7 @@ import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
 import { AgentProps } from "@/types";
+import { Message } from "@/types/vapi";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -118,26 +119,33 @@ const Agent = ({
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
 
-    if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
-    } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
-      }
+    try {
+      if (type === "generate") {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!);
+      } else {
+        let formattedQuestions = "";
+        if (questions) {
+          formattedQuestions = questions
+            .map((question) => `- ${question}`)
+            .join("\n");
+        }
 
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+        const interviewerConfig = {
+          ...interviewer,
+          model: {
+            ...interviewer.model,
+            messages: interviewer.model.messages.map((msg) => ({
+              ...msg,
+              content: msg.content.replace("{{questions}}", formattedQuestions),
+            })),
+          },
+        };
+
+        await vapi.start(interviewerConfig);
+      }
+    } catch (error) {
+      console.error("Vapi start error:", error);
+      setCallStatus(CallStatus.INACTIVE);
     }
   };
 
