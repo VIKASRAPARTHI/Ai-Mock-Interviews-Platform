@@ -155,8 +155,8 @@ const Agent = ({
   };
 
   return (
-    <>
-      <div className="call-view">
+    <div className="flex flex-col items-center justify-center w-full">
+      <div className="call-view justify-center">
         {/* AI Interviewer Card */}
         <div className="card-interviewer">
           <div className="avatar">
@@ -176,11 +176,11 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <Image
-              src="/user-avatar.png"
+              src="/profile.svg"
               alt="profile-image"
-              width={539}
-              height={539}
-              className="rounded-full object-cover size-[120px]"
+              width={60}
+              height={60}
+              className="rounded-full object-cover size-[120px] bg-primary-200 p-6"
             />
             <h3>{userName}</h3>
           </div>
@@ -188,7 +188,7 @@ const Agent = ({
       </div>
 
       {messages.length > 0 && (
-        <div className="transcript-border">
+        <div className="transcript-border w-full max-w-4xl">
           <div className="transcript">
             <p
               key={lastMessage}
@@ -203,7 +203,7 @@ const Agent = ({
         </div>
       )}
 
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center mt-8">
         {callStatus !== "ACTIVE" ? (
           <button className="relative btn-call" onClick={() => handleCall()}>
             <span
@@ -225,7 +225,7 @@ const Agent = ({
           </button>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

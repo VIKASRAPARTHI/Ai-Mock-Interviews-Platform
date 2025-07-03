@@ -5,7 +5,17 @@ import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 
 export async function POST(request: Request) {
-  const { type, role, level, techstack, amount, userid } = await request.json();
+  try {
+    const body = await request.json();
+    console.log('Full request body:', body);
+    
+    const { type, role, level, techstack, amount, userid } = body;
+    console.log('Vapi generate API called with:', { type, role, level, techstack, amount, userid });
+    
+    if (!userid) {
+      console.error('Missing userid in request');
+      return Response.json({ success: false, error: 'Missing userid' }, { status: 400 });
+    }
 
   try {
     const { text: questions } = await generateText({
@@ -32,17 +42,22 @@ export async function POST(request: Request) {
       techstack: techstack.split(","),
       questions: JSON.parse(questions),
       userId: userid,
-      finalized: true,
+      finalized: false,
       coverImage: getRandomInterviewCover(),
       createdAt: new Date().toISOString(),
     };
 
-    await db.collection("interviews").add(interview);
+    const docRef = await db.collection("interviews").add(interview);
+    console.log('Interview saved with ID:', docRef.id);
 
-    return Response.json({ success: true }, { status: 200 });
+    return Response.json({ success: true, interviewId: docRef.id }, { status: 200 });
   } catch (error) {
     console.error("Error:", error);
     return Response.json({ success: false, error: error }, { status: 500 });
+  }
+  } catch (parseError) {
+    console.error('Error parsing request:', parseError);
+    return Response.json({ success: false, error: 'Invalid request body' }, { status: 400 });
   }
 }
 
